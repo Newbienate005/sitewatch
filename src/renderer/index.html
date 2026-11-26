@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+  <title>SiteWatch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ===== Dashboard ===== -->
+  <section id="view-list" class="view">
+    <header class="bar">
+      <div class="brand"><span class="dot" id="overall-dot"></span><span>SiteWatch</span></div>
+      <div class="summary" id="summary"></div>
+      <div class="actions">
+        <button class="btn" id="btn-add" title="Add site (Ctrl+N)">＋<span class="lbl"> Add</span></button>
+        <button class="btn primary" id="btn-check-all" title="Check all now (F5)">↻<span class="lbl"> Check all</span></button>
+        <button class="btn icon" id="btn-settings" title="Settings">⚙</button>
+      </div>
+    </header>
+    <div class="banner" id="banner" hidden></div>
+    <div class="table" id="table">
+      <div class="thead">
+        <span></span><span>Site</span><span class="c-checked">Checked</span><span class="c-ms">Resp.</span><span class="c-ssl">SSL</span>
+      </div>
+      <div id="rows"></div>
+    </div>
+    <div class="empty" id="empty" hidden>
+      <p>No sites yet.</p>
+      <button class="btn primary" id="btn-add-empty">＋ Add your first site</button>
+    </div>
+    <footer class="foot" id="foot"></footer>
+  </section>
+
+  <!-- ===== Site detail ===== -->
+  <section id="view-detail" class="view" hidden>
+    <header class="bar">
+      <button class="btn icon" id="btn-back" title="Back (Esc)">←</button>
+      <div class="d-title"><span class="dot" id="d-dot"></span><span id="d-name"></span></div>
+      <div class="actions">
+        <button class="btn" id="d-check" title="Check now">↻</button>
+        <button class="btn" id="d-edit">Edit</button>
+      </div>
+    </header>
+    <div class="detail-body">
+      <a class="d-url" id="d-url" href="#"></a>
+      <div class="d-status" id="d-status"></div>
+      <div class="tiles" id="d-tiles"></div>
+      <h3>Last 24 hours <span class="muted" id="d-range"></span></h3>
+      <div class="timeline" id="d-timeline"></div>
+      <div class="axis"><span>24h ago</span><span>12h</span><span>now</span></div>
+      <div class="spark-wrap"><svg id="d-spark" preserveAspectRatio="none"></svg><div class="spark-label" id="d-spark-label"></div></div>
+      <h3>Downtime incidents</h3>
+      <div id="d-incidents" class="list"></div>
+      <h3>Checks</h3>
+      <div id="d-checks" class="list checks"></div>
+    </div>
+  </section>
+
+  <!-- ===== Add / edit sheet ===== -->
+  <dialog id="dlg-site">
+    <form method="dialog" id="form-site">
+      <h2 id="site-form-title">Add site</h2>
+      <label>URL<input name="url" required placeholder="https://example.com" autocomplete="off" spellcheck="false"></label>
+      <label>Nickname <span class="muted">optional</span><input name="nickname" placeholder="Marketing site" autocomplete="off"></label>
+      <label>Required keyword <span class="muted">optional</span><input name="keyword" placeholder="e.g. Add to cart" autocomplete="off">
+        <small>If this text is missing from the page, the site counts as DOWN. Pick something only a healthy page shows.</small></label>
+      <p class="err" id="site-err"></p>
+      <div class="row-btns">
+        <button type="button" class="btn danger" id="btn-delete" hidden>Delete</button>
+        <span class="grow"></span>
+        <button type="button" class="btn" value="cancel" id="btn-cancel-site">Cancel</button>
+        <button class="btn primary" id="btn-save-site">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Settings sheet ===== -->
+  <dialog id="dlg-settings">
+    <form method="dialog" id="form-settings">
+      <h2>Settings</h2>
+      <div class="grid2">
+        <label>Check every<span class="inline"><input name="intervalMinutes" type="number" min="1" max="1440"> min</span></label>
+        <label>Repeat alerts every<span class="inline"><input name="alertRepeatMinutes" type="number" min="5"> min</span></label>
+        <label>SSL warning at<span class="inline"><input name="sslWarnDays" type="number" min="1"> days</span></label>
+        <label>SSL critical at<span class="inline"><input name="sslCritDays" type="number" min="0"> days</span></label>
+      </div>
+      <label>Open dashboard shortcut
+        <input name="shortcut" id="shortcut-input" readonly placeholder="Click, then press keys">
+        <small id="shortcut-msg">Click the box and press a new combination. Backspace clears it.</small>
+      </label>
+      <label>Theme
+        <select name="theme"><option value="system">Match Windows</option><option value="dark">Dark</option><option value="light">Light</option></select>
+      </label>
+      <fieldset>
+        <label class="check"><input type="checkbox" name="notifyDown"> Notify when a site goes down</label>
+        <label class="check"><input type="checkbox" name="notifyUp"> Notify when a site recovers</label>
+        <label class="check"><input type="checkbox" name="notifySsl"> Notify about expiring SSL certificates</label>
+        <label class="check"><input type="checkbox" name="closeToTray"> Closing the window keeps monitoring in the tray</label>
+        <label class="check"><input type="checkbox" name="startWithWindows"> Start with Windows (hidden in tray)</label>
+      </fieldset>
+      <p class="err" id="settings-err"></p>
+      <div class="row-btns">
+        <span class="grow"></span>
+        <button type="button" class="btn" id="btn-cancel-settings">Cancel</button>
+        <button class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

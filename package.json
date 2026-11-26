@@ -1,0 +1,36 @@
+{
+  "name": "sitewatch",
+  "productName": "SiteWatch",
+  "version": "1.0.0",
+  "description": "Compact desktop website monitor: uptime, response time, SSL expiry and keyword checks.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/checker.test.js",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.sitewatch.app",
+    "productName": "SiteWatch",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "^45.5.0",
+    "electron-builder": "^26.18.0"
+  }
+}
