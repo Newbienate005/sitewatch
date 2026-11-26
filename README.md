@@ -29,3 +29,14 @@ Everything is stored in `%APPDATA%\SiteWatch\*.json`: sites, settings, 48h of ch
 
 ## Tests
 `npm test` runs against local HTTP/HTTPS servers.
+
+## Keyboard
+| Keys | Action |
+|---|---|
+| Ctrl+Alt+M (changeable) | Show or hide SiteWatch from any app |
+| F5 | Check all sites, or the open site |
+| Ctrl+N | Add a site |
+| Ctrl+, | Open settings |
+| Delete | Delete the selected site (asks first) |
+| Esc | Go back / close a panel |
+| / | Search (shown once you have more than 10 sites) |

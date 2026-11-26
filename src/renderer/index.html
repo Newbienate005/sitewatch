@@ -7,106 +7,180 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- ===== Dashboard ===== -->
+  <!-- ===== List: all sites ===== -->
   <section id="view-list" class="view">
     <header class="bar">
-      <div class="brand"><span class="dot" id="overall-dot"></span><span>SiteWatch</span></div>
-      <div class="summary" id="summary"></div>
+      <div class="bar-title">
+        <span class="dot" id="overall-dot" aria-hidden="true"></span>
+        <h1>SiteWatch</h1>
+        <span class="summary" id="summary"></span>
+      </div>
       <div class="actions">
-        <button class="btn" id="btn-add" title="Add site (Ctrl+N)">＋<span class="lbl"> Add</span></button>
-        <button class="btn primary" id="btn-check-all" title="Check all now (F5)">↻<span class="lbl"> Check all</span></button>
-        <button class="btn icon" id="btn-settings" title="Settings">⚙</button>
+        <button type="button" class="btn primary" id="btn-add" aria-keyshortcuts="Control+N"><i data-icon="plus"></i>Add site</button>
+        <button type="button" class="icon-btn" id="btn-check-all" aria-label="Check all now" data-tip="Check all now" data-kbd="F5" aria-keyshortcuts="F5"><i data-icon="refresh"></i></button>
+        <button type="button" class="icon-btn" id="btn-settings" aria-label="Open settings" data-tip="Open settings" data-kbd="Ctrl+," aria-keyshortcuts="Control+Comma"><i data-icon="gear"></i></button>
       </div>
     </header>
-    <div class="banner" id="banner" hidden></div>
-    <div class="table" id="table">
-      <div class="thead">
-        <span></span><span>Site</span><span class="c-checked">Checked</span><span class="c-ms">Resp.</span><span class="c-ssl">SSL</span>
+    <div class="banner" id="banner" role="status" hidden></div>
+    <main class="page">
+      <div class="toolbar" id="toolbar" hidden>
+        <label class="search" for="search">
+          <i data-icon="search"></i><span class="search-name">Search</span>
+          <input id="search" type="search" autocomplete="off" spellcheck="false" aria-keyshortcuts="/">
+        </label>
       </div>
-      <div id="rows"></div>
-    </div>
-    <div class="empty" id="empty" hidden>
-      <p>No sites yet.</p>
-      <button class="btn primary" id="btn-add-empty">＋ Add your first site</button>
-    </div>
-    <footer class="foot" id="foot"></footer>
+      <div class="frame">
+        <div class="thead" id="thead" aria-hidden="true">
+          <span></span><span>Site</span><span class="col-checked">Checked</span><span>Response</span><span>SSL</span><span></span>
+        </div>
+        <div id="rows" role="list" aria-label="Monitored sites"></div>
+        <div class="empty" id="empty" hidden></div>
+      </div>
+    </main>
+    <footer class="foot" id="foot" role="status" aria-live="polite"></footer>
   </section>
 
-  <!-- ===== Site detail ===== -->
+  <!-- ===== Detail: one site ===== -->
   <section id="view-detail" class="view" hidden>
     <header class="bar">
-      <button class="btn icon" id="btn-back" title="Back (Esc)">←</button>
-      <div class="d-title"><span class="dot" id="d-dot"></span><span id="d-name"></span></div>
+      <div class="bar-title">
+        <button type="button" class="icon-btn" id="btn-back" aria-label="Back to sites" data-tip="Back to sites" data-kbd="Esc"><i data-icon="back"></i></button>
+        <span class="dot" id="d-dot" aria-hidden="true"></span>
+        <h1 id="d-name"></h1>
+      </div>
       <div class="actions">
-        <button class="btn" id="d-check" title="Check now">↻</button>
-        <button class="btn" id="d-edit">Edit</button>
+        <button type="button" class="icon-btn" id="d-check" aria-label="Check now" data-tip="Check now" data-kbd="F5" aria-keyshortcuts="F5"><i data-icon="refresh"></i></button>
+        <button type="button" class="btn" id="d-edit">Edit site</button>
       </div>
     </header>
-    <div class="detail-body">
+    <main class="page detail">
       <a class="d-url" id="d-url" href="#"></a>
       <div class="d-status" id="d-status"></div>
       <div class="tiles" id="d-tiles"></div>
-      <h3>Last 24 hours <span class="muted" id="d-range"></span></h3>
+      <h2>Last 24 hours <span class="muted" id="d-range"></span></h2>
       <div class="timeline" id="d-timeline"></div>
-      <div class="axis"><span>24h ago</span><span>12h</span><span>now</span></div>
-      <div class="spark-wrap"><svg id="d-spark" preserveAspectRatio="none"></svg><div class="spark-label" id="d-spark-label"></div></div>
-      <h3>Downtime incidents</h3>
+      <div class="axis" aria-hidden="true"><span>24h ago</span><span>12h</span><span>Now</span></div>
+      <div class="spark-wrap"><svg id="d-spark" preserveAspectRatio="none" aria-hidden="true"></svg><div class="spark-label" id="d-spark-label"></div></div>
+      <h2>Downtime incidents</h2>
       <div id="d-incidents" class="list"></div>
-      <h3>Checks</h3>
-      <div id="d-checks" class="list checks"></div>
-    </div>
+      <h2>Checks</h2>
+      <div id="d-checks" class="list"></div>
+      <section class="danger-zone" aria-labelledby="danger-h">
+        <h2 id="danger-h">Delete site</h2>
+        <p>Stops monitoring this site and deletes its check history and incident log.</p>
+        <button type="button" class="btn danger" id="d-delete">Delete site</button>
+      </section>
+    </main>
   </section>
 
-  <!-- ===== Add / edit sheet ===== -->
-  <dialog id="dlg-site">
-    <form method="dialog" id="form-site">
-      <h2 id="site-form-title">Add site</h2>
-      <label>URL<input name="url" required placeholder="https://example.com" autocomplete="off" spellcheck="false"></label>
-      <label>Nickname <span class="muted">optional</span><input name="nickname" placeholder="Marketing site" autocomplete="off"></label>
-      <label>Required keyword <span class="muted">optional</span><input name="keyword" placeholder="e.g. Add to cart" autocomplete="off">
-        <small>If this text is missing from the page, the site counts as DOWN. Pick something only a healthy page shows.</small></label>
-      <p class="err" id="site-err"></p>
-      <div class="row-btns">
-        <button type="button" class="btn danger" id="btn-delete" hidden>Delete</button>
-        <span class="grow"></span>
-        <button type="button" class="btn" value="cancel" id="btn-cancel-site">Cancel</button>
-        <button class="btn primary" id="btn-save-site">Save</button>
+  <!-- ===== Settings ===== -->
+  <section id="view-settings" class="view" hidden>
+    <header class="bar">
+      <div class="bar-title">
+        <button type="button" class="icon-btn" id="s-back" aria-label="Back to sites" data-tip="Back to sites" data-kbd="Esc"><i data-icon="back"></i></button>
+        <h1>Settings</h1>
       </div>
+    </header>
+    <main class="page settings">
+      <form id="form-checks" novalidate>
+        <h2>Checks and alerts</h2>
+        <p class="section-lead">How often sites are checked, and when you're warned.</p>
+        <div class="grid2">
+          <div class="field">
+            <label for="f-interval">Check every</label>
+            <div class="with-unit"><input id="f-interval" name="intervalMinutes" type="number" min="1" max="1440" inputmode="numeric"><span>minutes</span></div>
+            <p class="field-err" id="f-interval-err"></p>
+          </div>
+          <div class="field">
+            <label for="f-repeat">Repeat down alerts every</label>
+            <div class="with-unit"><input id="f-repeat" name="alertRepeatMinutes" type="number" min="5" max="1440" inputmode="numeric"><span>minutes</span></div>
+            <p class="field-err" id="f-repeat-err"></p>
+          </div>
+          <div class="field">
+            <label for="f-warn">SSL warning at</label>
+            <div class="with-unit"><input id="f-warn" name="sslWarnDays" type="number" min="1" max="365" inputmode="numeric"><span>days left</span></div>
+            <p class="field-err" id="f-warn-err"></p>
+          </div>
+          <div class="field">
+            <label for="f-crit">SSL critical at</label>
+            <div class="with-unit"><input id="f-crit" name="sslCritDays" type="number" min="0" max="364" inputmode="numeric"><span>days left</span></div>
+            <p class="field-err" id="f-crit-err"></p>
+          </div>
+        </div>
+        <div class="row-btns">
+          <button class="btn primary" type="submit">Save changes</button>
+          <span class="saved muted" id="checks-saved" role="status"></span>
+        </div>
+      </form>
+
+      <section>
+        <h2>Notifications</h2>
+        <p class="section-lead">Changes save as soon as you switch them.</p>
+        <label class="check"><input type="checkbox" data-setting="notifyDown"> When a site goes down</label>
+        <label class="check"><input type="checkbox" data-setting="notifyUp"> When a site comes back up</label>
+        <label class="check"><input type="checkbox" data-setting="notifySsl"> When an SSL certificate is close to expiring</label>
+      </section>
+
+      <section>
+        <h2>App</h2>
+        <div class="field">
+          <label for="f-shortcut">Shortcut to open SiteWatch</label>
+          <input id="f-shortcut" readonly aria-describedby="f-shortcut-help">
+          <p class="help" id="f-shortcut-help">Click the box, then press the new keys. Backspace removes the shortcut.</p>
+          <p class="field-err" id="f-shortcut-err"></p>
+        </div>
+        <div class="field">
+          <label for="f-theme">Theme</label>
+          <select id="f-theme" data-setting="theme"><option value="system">Match Windows</option><option value="dark">Dark</option><option value="light">Light</option></select>
+        </div>
+        <label class="check"><input type="checkbox" data-setting="closeToTray"> Keep monitoring in the tray when the window is closed</label>
+        <label class="check"><input type="checkbox" data-setting="startWithWindows"> Start with Windows, hidden in the tray</label>
+      </section>
+    </main>
+  </section>
+
+  <!-- ===== Add / edit slide-over ===== -->
+  <dialog id="sheet" class="sheet" aria-labelledby="sheet-title">
+    <form id="form-site" novalidate>
+      <header class="sheet-head">
+        <h2 id="sheet-title">Add site</h2>
+        <button type="button" class="icon-btn" id="sheet-close" aria-label="Close" data-tip="Close" data-kbd="Esc"><i data-icon="close"></i></button>
+      </header>
+      <div class="sheet-body">
+        <p class="draft-note" id="draft-note" hidden>Restored the entry you didn't finish. <button type="button" class="link" id="draft-discard">Discard it</button></p>
+        <div class="field">
+          <label for="f-url">Website address</label>
+          <input id="f-url" name="url" autocomplete="off" spellcheck="false" placeholder="example.com" aria-describedby="f-url-err">
+          <p class="field-err" id="f-url-err"></p>
+        </div>
+        <div class="field">
+          <label for="f-nick">Nickname <span class="muted">(optional)</span></label>
+          <input id="f-nick" name="nickname" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-key">Required keyword <span class="muted">(optional)</span></label>
+          <input id="f-key" name="keyword" autocomplete="off" aria-describedby="f-key-help">
+          <p class="help" id="f-key-help">If this text is missing from the page, the site counts as down. Pick text that only a working page shows.</p>
+        </div>
+      </div>
+      <footer class="sheet-foot">
+        <button type="button" class="btn" id="sheet-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="sheet-save">Add site</button>
+      </footer>
     </form>
   </dialog>
 
-  <!-- ===== Settings sheet ===== -->
-  <dialog id="dlg-settings">
-    <form method="dialog" id="form-settings">
-      <h2>Settings</h2>
-      <div class="grid2">
-        <label>Check every<span class="inline"><input name="intervalMinutes" type="number" min="1" max="1440"> min</span></label>
-        <label>Repeat down alerts every<span class="inline"><input name="alertRepeatMinutes" type="number" min="5"> min</span></label>
-        <label>SSL warning at<span class="inline"><input name="sslWarnDays" type="number" min="1"> days</span></label>
-        <label>SSL critical at<span class="inline"><input name="sslCritDays" type="number" min="0"> days</span></label>
-      </div>
-      <label>Open dashboard shortcut
-        <input name="shortcut" id="shortcut-input" readonly placeholder="Click, then press keys">
-        <small id="shortcut-msg">Click the box and press a new combination. Backspace clears it.</small>
-      </label>
-      <label>Theme
-        <select name="theme"><option value="system">Match Windows</option><option value="dark">Dark</option><option value="light">Light</option></select>
-      </label>
-      <fieldset>
-        <label class="check"><input type="checkbox" name="notifyDown"> Notify when a site goes down</label>
-        <label class="check"><input type="checkbox" name="notifyUp"> Notify when a site recovers</label>
-        <label class="check"><input type="checkbox" name="notifySsl"> Notify about expiring SSL certificates</label>
-        <label class="check"><input type="checkbox" name="closeToTray"> Closing the window keeps monitoring in the tray</label>
-        <label class="check"><input type="checkbox" name="startWithWindows"> Start with Windows (hidden in tray)</label>
-      </fieldset>
-      <p class="err" id="settings-err"></p>
-      <div class="row-btns">
-        <span class="grow"></span>
-        <button type="button" class="btn" id="btn-cancel-settings">Cancel</button>
-        <button class="btn primary">Save</button>
-      </div>
-    </form>
+  <!-- ===== Destructive confirmation ===== -->
+  <dialog id="confirm" class="confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+    <h2 id="confirm-title"></h2>
+    <p id="confirm-body"></p>
+    <div class="row-btns end">
+      <button type="button" class="btn" id="confirm-cancel" autofocus>Cancel</button>
+      <button type="button" class="btn danger" id="confirm-ok"></button>
+    </div>
   </dialog>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
 
   <script src="app.js"></script>
 </body>

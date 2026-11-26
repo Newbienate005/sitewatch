@@ -17,11 +17,12 @@ function isHomepage(u) {
 
 function normalizeUrl(input) {
   let s = String(input || '').trim();
-  if (!s) throw new Error('URL is empty');
-  if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
-  const u = new URL(s);
-  if (!['http:', 'https:'].includes(u.protocol)) throw new Error('Only http and https URLs are supported');
-  if (!u.hostname.includes('.') && u.hostname !== 'localhost') throw new Error('That does not look like a domain');
+  if (!s) throw new Error('Enter a website address, like example.com.');
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) s = 'https://' + s;
+  let u;
+  try { u = new URL(s); } catch { throw new Error('Enter a full domain, like example.com or shop.example.co.ke.'); }
+  if (!['http:', 'https:'].includes(u.protocol)) throw new Error('Use an address that starts with http:// or https://.');
+  if (!u.hostname.includes('.') && u.hostname !== 'localhost') throw new Error('Enter a full domain, like example.com or shop.example.co.ke.');
   return u.toString();
 }
 

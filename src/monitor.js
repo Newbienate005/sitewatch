@@ -66,7 +66,7 @@ class Monitor extends EventEmitter {
   // ---------- sites CRUD ----------
   addSite({ url, nickname, keyword }) {
     const norm = checker.normalizeUrl(url);
-    if (this.sites.some((s) => s.url === norm && (s.keyword || '') === (keyword || '').trim())) throw new Error('That URL is already being monitored');
+    if (this.sites.some((s) => s.url === norm && (s.keyword || '') === (keyword || '').trim())) throw new Error('This address is already in your list. Edit the existing entry instead.');
     const site = { id: crypto.randomUUID(), url: norm, nickname: (nickname || '').trim(), keyword: (keyword || '').trim(), added: this.now() };
     this.sites.push(site);
     this.saveSites();
@@ -81,7 +81,7 @@ class Monitor extends EventEmitter {
     if (patch.url !== undefined) {
       next.url = checker.normalizeUrl(patch.url);
       }
-    if (this.sites.some((s) => s.id !== id && s.url === next.url && (s.keyword || '') === (patch.keyword !== undefined ? String(patch.keyword).trim() : next.keyword))) throw new Error('That URL is already being monitored');
+    if (this.sites.some((s) => s.id !== id && s.url === next.url && (s.keyword || '') === (patch.keyword !== undefined ? String(patch.keyword).trim() : next.keyword))) throw new Error('This address is already in your list. Edit the existing entry instead.');
     if (patch.nickname !== undefined) next.nickname = String(patch.nickname).trim();
     if (patch.keyword !== undefined) next.keyword = String(patch.keyword).trim();
     const changedTarget = next.url !== site.url || next.keyword !== site.keyword;
