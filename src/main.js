@@ -111,7 +111,7 @@ function updateTray(snap) {
   tray.setImage(statusIcon(snap.overall));
   const down = snap.sites.filter((s) => s.level === 'red').length;
   const warn = snap.sites.filter((s) => s.level === 'amber').length;
-  tray.setToolTip(`SiteWatch — ${snap.sites.length} site(s)` + (down ? ` · ${down} down` : '') + (warn ? ` · ${warn} warning` : '') + (!down && !warn && snap.sites.length ? ' · all OK' : ''));
+  tray.setToolTip(`SiteWatch: ${snap.sites.length} site(s)` + (down ? ` · ${down} down` : '') + (warn ? ` · ${warn} warning` : '') + (!down && !warn && snap.sites.length ? ' · all OK' : ''));
   if (win) win.setIcon(statusIcon(snap.overall));
 }
 

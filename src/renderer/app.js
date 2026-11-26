@@ -229,7 +229,7 @@ async function renderDetail() {
       const it = el('div', 'item');
       it.append(el('span', 'dot ' + (c.o ? '' : !c.up ? 'red' : c.w ? 'amber' : 'green')));
       it.append(el('span', 'when', clock(c.t)));
-      it.append(el('span', 'what', c.o ? 'Offline — not judged' : c.up ? (c.w || `HTTP ${c.s}`) : (c.e || 'Down')));
+      it.append(el('span', 'what', c.o ? 'Offline, not counted' : c.up ? (c.w || `HTTP ${c.s}`) : (c.e || 'Down')));
       it.append(el('span', 'meta', c.up ? msText(c.ms) : ''));
       it.title = c.e || c.w || '';
       return it;
