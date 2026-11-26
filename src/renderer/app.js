@@ -66,7 +66,6 @@ function sslText(site, last) {
   return last.ssl.daysLeft < 0 ? 'exp.' : `${last.ssl.daysLeft}d`;
 }
 const dotClass = (level) => (['green', 'amber', 'red'].includes(level) ? level : '');
-const LEVEL_RANK = { red: 0, amber: 1, unknown: 2, pending: 3, green: 4 };
 const LEVEL_WORD = { red: 'Down', amber: 'Warning', green: 'Up', unknown: 'Unknown', pending: 'Not checked yet' };
 
 // ---------- views ----------
@@ -95,8 +94,7 @@ function renderList() {
   const q = searchOn ? $('#search').value.trim().toLowerCase() : '';
 
   const shown = sites
-    .filter((s) => !q || (s.nickname || '').toLowerCase().includes(q) || s.url.toLowerCase().includes(q))
-    .sort((a, b) => (LEVEL_RANK[a.level] - LEVEL_RANK[b.level]) || (a.nickname || host(a.url)).localeCompare(b.nickname || host(b.url)));
+    .filter((s) => !q || (s.nickname || '').toLowerCase().includes(q) || s.url.toLowerCase().includes(q)); // keep the user's own order
 
   const empty = $('#empty');
   empty.replaceChildren();
