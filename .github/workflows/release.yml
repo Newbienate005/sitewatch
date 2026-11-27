@@ -45,6 +45,7 @@ jobs:
           fi
           echo "name=$v" >> "$GITHUB_OUTPUT"
       - name: Build installer and portable zip
+        shell: bash
         run: npx electron-builder --win nsis zip --x64 --publish never -c.win.signAndEditExecutable=true
       - uses: softprops/action-gh-release@v2
         with:
