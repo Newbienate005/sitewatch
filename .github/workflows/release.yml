@@ -1,0 +1,54 @@
+name: Release
+
+# Push a version tag (for example v1.0.1) to build SiteWatch on Windows
+# and publish a GitHub release with the installer and portable zip.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check the tag matches package.json
+        shell: bash
+        run: |
+          v="$(node -p "require('./package.json').version")"
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $v. Bump the version first."
+            exit 1
+          fi
+      - name: Build installer and portable zip
+        run: npx electron-builder --win nsis zip --x64 --publish never -c.win.signAndEditExecutable=true
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: SiteWatch ${{ github.ref_name }}
+          files: |
+            dist/*.exe
+            dist/*.zip
+          generate_release_notes: true
+          body: |
+            **Download:** `SiteWatch Setup ….exe` installs SiteWatch for your user. `SiteWatch-…-win.zip` is the portable version: unzip it, move the folder somewhere permanent, and run `SiteWatch.exe`.
+
+            The app isn't code-signed, so Windows SmartScreen asks first: click **More info → Run anyway**.
