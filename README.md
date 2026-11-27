@@ -40,3 +40,6 @@ Everything is stored in `%APPDATA%\SiteWatch\*.json`: sites, settings, 48h of ch
 | Delete | Delete the selected site (asks first) |
 | Esc | Go back / close a panel |
 | / | Search (shown once you have more than 10 sites) |
+
+## Licence
+MIT. See `LICENSE`.
