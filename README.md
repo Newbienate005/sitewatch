@@ -45,7 +45,7 @@ Everything is stored in `%APPDATA%\SiteWatch\*.json`: sites, settings, 48h of ch
 MIT. See `LICENSE`.
 
 ## Releasing
-Bump `version` in `package.json`, commit, then push a matching tag:
+Bump `version` in `package.json` and commit. Then either open **Actions → Release → Run workflow** on GitHub, or push a matching tag:
 
 ```bash
 git tag v1.0.1 && git push origin v1.0.1

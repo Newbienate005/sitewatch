@@ -1,10 +1,13 @@
 name: Release
 
-# Push a version tag (for example v1.0.1) to build SiteWatch on Windows
-# and publish a GitHub release with the installer and portable zip.
+# Builds SiteWatch on Windows and publishes a GitHub release with the
+# installer and portable zip. Start it either way:
+#  - push a version tag, for example v1.0.1, or
+#  - Actions tab > Release > Run workflow (releases the version in package.json).
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -31,19 +34,23 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Check the tag matches package.json
+      - name: Work out the release tag
+        id: tag
         shell: bash
         run: |
-          v="$(node -p "require('./package.json').version")"
-          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+          v="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "$v" ]; then
             echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $v. Bump the version first."
             exit 1
           fi
+          echo "name=$v" >> "$GITHUB_OUTPUT"
       - name: Build installer and portable zip
         run: npx electron-builder --win nsis zip --x64 --publish never -c.win.signAndEditExecutable=true
       - uses: softprops/action-gh-release@v2
         with:
-          name: SiteWatch ${{ github.ref_name }}
+          tag_name: ${{ steps.tag.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          name: SiteWatch ${{ steps.tag.outputs.name }}
           files: |
             dist/*.exe
             dist/*.zip
